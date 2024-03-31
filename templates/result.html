@@ -1,0 +1,22 @@
+<!-- templates/result.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Result</title>
+  </head>
+  <body>
+    <h1>Prediction Result</h1>
+    {% if prediction_success %}
+    <p>Prediction completed successfully!</p>
+    <!-- Display predicted image, video, or any other relevant information -->
+    <img src="{{ predicted_image_path }}" alt="Predicted Image" />
+    <!-- Or display a link to the predicted video -->
+    <a href="{{ predicted_video_path }}">Download Predicted Video</a>
+    {% else %}
+    <p>There was an error with the prediction.</p>
+    {% endif %}
+  </body>
+</html>

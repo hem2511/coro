@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Corrosion Detection</title>
+    <style>
+      /* Add your custom CSS styles here */
+      /* Example styles */
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+      }
+      input[type="file"] {
+        margin-bottom: 10px;
+      }
+      .btn {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      /* Navigation styles */
+      nav {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      nav ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      nav ul li {
+        display: inline;
+        margin-right: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li>
+          <a href="#upload-images" id="upload-images-link">Upload Images</a>
+        </li>
+        <li>
+          <a href="#upload-videos" id="upload-videos-link">Upload Videos</a>
+        </li>
+      </ul>
+    </nav>
+    <div class="container" id="upload-images">
+      <h1>Upload Images</h1>
+      <form
+        id="upload-images-form"
+        enctype="multipart/form-data"
+        action="/predict_images"
+        method="POST"
+      >
+        <label for="image">Select Image File:</label><br />
+        <input
+          type="file"
+          id="image"
+          name="image"
+          accept="image/*"
+          required
+        /><br />
+        <button type="submit" class="btn">Upload Image</button>
+      </form>
+      <div id="result-message-images"></div>
+      <div id="predicted-image" style="display: none; padding: 40px 150px">
+        <!-- Display predicted image(s) here -->
+        <img
+          id="predicted-image-tag"
+          src=""
+          alt="Predicted Image"
+          style="height: 300px; width: 300px"
+        />
+      </div>
+    </div>
+
+    <div class="container" id="upload-videos" style="display: none">
+      <h1>Upload Videos</h1>
+      <form
+        id="upload-videos-form"
+        enctype="multipart/form-data"
+        action="/predict_videos"
+        method="POST"
+      >
+        <label for="video">Select Video File:</label><br />
+        <input
+          type="file"
+          id="video"
+          name="video"
+          accept=".mp4,.avi"
+          required
+        /><br />
+        <label for="confidence">Confidence Level:</label><br />
+        <input
+          type="number"
+          id="confidence"
+          name="confidence"
+          min="0"
+          max="100"
+          value="30"
+          required
+        /><br />
+        <button type="submit" class="btn">Upload Video</button>
+      </form>
+      <div class="container" id="predicted-content" style="display: block">
+        <h1>Predicted Content</h1>
+        <div id="predicted-folder" style="display: block">
+          <!-- Display predicted folder contents here -->
+          <video width="320" height="240" autoplay muted>
+            <source src="/static/output/predicted_video.mp4" type="video/mp4" />
+            <source
+              src="/static/output/predicted_video.webm"
+              type="video/webm"
+            />
+            Your browser does not support the video tag.
+          </video>
+          <p id="predicted-folder-text"></p>
+        </div>
+      </div>
+      <div id="result-message-videos"></div>
+    </div>
+
+    <script>
+      document
+        .getElementById("upload-images-link")
+        .addEventListener("click", function () {
+          document.getElementById("upload-images").style.display = "block";
+          document.getElementById("upload-videos").style.display = "none";
+        });
+
+      document
+        .getElementById("upload-videos-link")
+        .addEventListener("click", function () {
+          document.getElementById("upload-videos").style.display = "block";
+          document.getElementById("upload-images").style.display = "none";
+        });
+
+      document
+        .getElementById("upload-images-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          var form = event.target;
+          var formData = new FormData(form);
+
+          fetch("/predict_images", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById("result-message-images").innerText =
+                data.message;
+
+              if (data.success) {
+                // Display predicted image
+                var predictedImagePath = data.predicted_image_path;
+                document.getElementById("predicted-image-tag").src =
+                  predictedImagePath;
+                document.getElementById("predicted-image").style.display =
+                  "block";
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              document.getElementById("result-message-images").innerText =
+                "An error occurred. Please try again later.";
+            });
+        });
+
+      document
+        .getElementById("upload-videos-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          var form = event.target;
+          var formData = new FormData(form);
+
+          fetch("/predict_videos", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById("result-message-videos").innerText =
+                data.message;
+              if (data.success) {
+                // Display predicted folder contents
+                var predictedFolderPath = data.predicted_frames_directory;
+                document.getElementById("predicted-folder-text").innerText =
+                  "Predicted folder: " + predictedFolderPath;
+                document.getElementById("predicted-folder").style.display =
+                  "block";
+                // Show the predicted content container
+                document.getElementById("predicted-content").style.display =
+                  "block";
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              document.getElementById("result-message-videos").innerText =
+                "An error occurred. Please try again later.";
+            });
+        });
+    </script>
+  </body>
+</html>
