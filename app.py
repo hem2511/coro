@@ -8,6 +8,7 @@ from roboflow import Roboflow
 import cv2
 import uuid
 import ffmpeg
+import subprocess
 
 app = Flask(__name__)
 
@@ -29,7 +30,11 @@ for folder in [UPLOAD_FOLDER, RESULTS_FOLDER, OUTPUT_FOLDER]:
 def index():
     return render_template('index.html')
 
-@app.route('/result')
+@app.route('/home.html')
+def home():
+    return render_template('home.html')
+
+@app.route('/result.html')
 def result():
     return render_template('result.html')
 
@@ -52,7 +57,7 @@ def predict_images():
 
 @app.route('/predict_videos', methods=['POST'])
 def predict_videos():
-    confidence = request.form.get('confidence', type=float)
+    confidence = 40
     video_file = request.files['video']
 
     # Generate a unique filename for the uploaded video
@@ -71,7 +76,8 @@ def predict_videos():
     predicted_video_path = os.path.join(OUTPUT_FOLDER, 'predicted_video.mp4')
     merge_predicted_frames_to_video(predicted_frames_directory, predicted_video_path)
 
-    return jsonify({'success': True, 'message': f'Video prediction completed successfully for {num_frames} frames!'})
+
+    return jsonify({'success': True, 'message': f'Video prediction completed successfully for {num_frames} frames!', 'predicted_video_path': predicted_video_path})
 
 def extract_frames(video_path, frames_directory):
     os.makedirs(frames_directory, exist_ok=True)
@@ -114,8 +120,6 @@ def merge_predicted_frames_to_video(predicted_frames_directory, output_video_pat
         video_writer.write(frame)
 
     video_writer.release()
-
-    ffmpeg.input(output_video_path).output(output_video_path.replace('.mp4', '.webm')).run()
 
 if __name__ == '__main__':
     app.run(debug=True)

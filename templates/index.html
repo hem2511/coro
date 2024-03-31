@@ -3,145 +3,162 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../static/assests/DeepCorro-removebg-preview.ico"
+    />
     <title>Corrosion Detection</title>
-    <style>
-      /* Add your custom CSS styles here */
-      /* Example styles */
-      .container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-      }
-      input[type="file"] {
-        margin-bottom: 10px;
-      }
-      .btn {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      /* Navigation styles */
-      nav {
-        text-align: center;
-        margin-bottom: 20px;
-      }
-      nav ul {
-        list-style-type: none;
-        padding: 0;
-      }
-      nav ul li {
-        display: inline;
-        margin-right: 20px;
-      }
-    </style>
+    <script
+      src="https://kit.fontawesome.com/3fe6965435.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="/static/css/style.css" />
   </head>
   <body>
     <nav>
+      <div class="logo">
+        <img
+          src="../static/assests/DeepCorro-removebg-preview.png"
+          alt="logo"
+        />
+        DeepCorro
+      </div>
       <ul>
         <li>
-          <a href="#upload-images" id="upload-images-link">Upload Images</a>
+          <a href="./home.html" id="home_link">Home</a>
         </li>
         <li>
-          <a href="#upload-videos" id="upload-videos-link">Upload Videos</a>
+          <a href="/#upload-images" id="upload-images-link">Upload Images</a>
+        </li>
+        <li>
+          <a href="/#upload-videos" id="upload-videos-link">Upload Videos</a>
         </li>
       </ul>
     </nav>
-    <div class="container" id="upload-images">
-      <h1>Upload Images</h1>
+
+    <div class="image-upload container" id="upload-images">
+      <div class="heading">
+        <h1>Image Detection</h1>
+        <p>Detect Corrosion from Image using DeepLearning</p>
+      </div>
       <form
         id="upload-images-form"
         enctype="multipart/form-data"
         action="/predict_images"
         method="POST"
       >
-        <label for="image">Select Image File:</label><br />
-        <input
-          type="file"
-          id="image"
-          name="image"
-          accept="image/*"
-          required
-        /><br />
+        <div class="upload">
+          <div class="upload-icon">
+            <i class="fa-regular fa-file-image"></i>
+          </div>
+          <input
+            type="file"
+            id="image"
+            name="image"
+            accept="image/*"
+            required
+          />
+        </div>
         <button type="submit" class="btn">Upload Image</button>
       </form>
       <div id="result-message-images"></div>
-      <div id="predicted-image" style="display: none; padding: 40px 150px">
-        <!-- Display predicted image(s) here -->
-        <img
-          id="predicted-image-tag"
-          src=""
-          alt="Predicted Image"
-          style="height: 300px; width: 300px"
-        />
-      </div>
     </div>
 
-    <div class="container" id="upload-videos" style="display: none">
-      <h1>Upload Videos</h1>
+    <div
+      class="upload-video container"
+      id="upload-videos"
+      style="display: none"
+    >
+      <div class="heading">
+        <h1>Video Detection</h1>
+        <p>Detect Corrosion from Video using DeepLearning</p>
+      </div>
       <form
         id="upload-videos-form"
         enctype="multipart/form-data"
         action="/predict_videos"
         method="POST"
       >
-        <label for="video">Select Video File:</label><br />
-        <input
-          type="file"
-          id="video"
-          name="video"
-          accept=".mp4,.avi"
-          required
-        /><br />
-        <label for="confidence">Confidence Level:</label><br />
-        <input
-          type="number"
-          id="confidence"
-          name="confidence"
-          min="0"
-          max="100"
-          value="30"
-          required
-        /><br />
+        <div class="upload">
+          <div class="upload-icon">
+            <i class="fa-regular fa-file-video"></i>
+          </div>
+          <input
+            type="file"
+            id="video"
+            name="video"
+            accept=".mp4,.avi"
+            required
+          />
+        </div>
         <button type="submit" class="btn">Upload Video</button>
       </form>
-      <div class="container" id="predicted-content" style="display: block">
-        <h1>Predicted Content</h1>
-        <div id="predicted-folder" style="display: block">
-          <!-- Display predicted folder contents here -->
-          <video width="320" height="240" autoplay muted>
-            <source src="/static/output/predicted_video.mp4" type="video/mp4" />
+      <div id="result-message-videos"></div>
+    </div>
+
+    <div id="popup" class="popup">
+      <div class="popup-content">
+        <div class="close-icon">
+          <p class="popup-heading">Result media</p>
+          <span class="close" onclick="closePopup()">&times;</span>
+        </div>
+        <div id="popup-content" class="pop-up-media">
+          <!-- <img
+            src="../static/result/predicted_151f4060-4ec0-43ce-a5c4-963639065cf8.jpg"
+            alt="Predicted Image"
+            style="
+              width: 300px;
+              height: 300px;
+              padding: 0 140px;
+              overflow: hidden;
+            "
+          />
+          <div class="download-link">
+            <a
+              href="../static/result/predicted_151f4060-4ec0-43ce-a5c4-963639065cf8.jpg"
+              download
+              ><i class="fa-solid fa-download"></i> Download Image</a
+            >
+          </div> -->
+          <!-- <video autoplay loop style="max-width: 100%; max-height: 100%">
             <source
-              src="/static/output/predicted_video.webm"
+              src="../static/output/predicted_video.webm"
               type="video/webm"
-            />
-            Your browser does not support the video tag.
-          </video>
-          <p id="predicted-folder-text"></p>
+            /></video
+          >; -->
+
+          <!-- <div class="download-link">
+            <a href="../static/output/predicted_video.mp4" download
+              ><i class="fa-solid fa-download"></i> Download Image</a
+            > -->
+          </div>
         </div>
       </div>
-      <div id="result-message-videos"></div>
     </div>
 
     <script>
       document
         .getElementById("upload-images-link")
         .addEventListener("click", function () {
-          document.getElementById("upload-images").style.display = "block";
+          document.getElementById("upload-images").style.display = "flex";
           document.getElementById("upload-videos").style.display = "none";
         });
 
       document
         .getElementById("upload-videos-link")
         .addEventListener("click", function () {
-          document.getElementById("upload-videos").style.display = "block";
+          document.getElementById("upload-videos").style.display = "flex";
           document.getElementById("upload-images").style.display = "none";
         });
+
+      function showPopup() {
+        document.getElementById("popup").style.display = "flex";
+      }
+
+      function closePopup() {
+        document.getElementById("popup").style.display = "none";
+      }
 
       document
         .getElementById("upload-images-form")
@@ -160,12 +177,16 @@
                 data.message;
 
               if (data.success) {
-                // Display predicted image
+                showPopup();
+                document.getElementById("popup-content").innerHTML =
+                  "Loading...";
                 var predictedImagePath = data.predicted_image_path;
-                document.getElementById("predicted-image-tag").src =
-                  predictedImagePath;
-                document.getElementById("predicted-image").style.display =
-                  "block";
+                document.getElementById(
+                  "popup-content"
+                ).innerHTML = `<img src="${predictedImagePath}" alt="Predicted Image" style="width: 300px; height: 300px; padding: 0 140px; overflow: hidden">`;
+                document.getElementById(
+                  "popup-content"
+                ).innerHTML = `<div class="download-link"><a href="${predictedImagePath}" download><i class="fa-solid fa-download"></i> Download Image</a></div>`;
               }
             })
             .catch((error) => {
@@ -190,16 +211,18 @@
             .then((data) => {
               document.getElementById("result-message-videos").innerText =
                 data.message;
+
               if (data.success) {
-                // Display predicted folder contents
-                var predictedFolderPath = data.predicted_frames_directory;
-                document.getElementById("predicted-folder-text").innerText =
-                  "Predicted folder: " + predictedFolderPath;
-                document.getElementById("predicted-folder").style.display =
-                  "block";
-                // Show the predicted content container
-                document.getElementById("predicted-content").style.display =
-                  "block";
+                showPopup();
+                document.getElementById("popup-content").innerHTML =
+                  "Loading...";
+                var predictedVideoPath = data.predicted_video_path;
+                // document.getElementById(
+                //   "popup-content"
+                // ).innerHTML = `<video autoplay loop style="max-width: 100%; max-height: 100%;"><source src="${predictedVideoPath}" type="video/webm"></video>`;
+                document.getElementById(
+                  "popup-content"
+                ).innerHTML = `<div class="download-link"><a href="${predictedVideoPath}" download><i class="fa-solid fa-download"></i> Download Video</a></div>`;
               }
             })
             .catch((error) => {
